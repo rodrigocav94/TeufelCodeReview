@@ -1,0 +1,30 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2639
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\fs24 \cf0 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 On line 10, I believe MusicAlbum would need to conform to the codable protocol in order to be decoded by a JSONDecoder.\
+\'a0\
+On line 32, it\'92s necessary to store the combine pipeline in a cancellable in order to keep it in memory. You can quickly do that by adding the line .store(in: &cancellables)\
+\'a0\
+On line 43, there\'92s an attempt to initialize ViewModel without giving an initial value to it\'92s albums property, if your intention was to quickly initialize it without passing any values, you could set a default empty initial value like this on line 25:\
+init(albums: [MusicAlbum] = [])\
+\'a0\
+On line 50, you could avoid being verbose by replacing if !false == isLoading for if isLoading.\
+It\'92s not necessary to use the isActive parameter for the NavigationLink on line 61, as the code doesn\'92t require for the navigation to happen programatically. Also in a different occasion, if you ever need to have a binding that only gets read but never written, you could use .constant(showDetailView) instead of creating a custom binding.\
+\'a0\
+From line 65 to 74, It would be nice to turn the view into a component in order to make the code smaller. Large code files tend to confuse Xcode and when there\'92s an error somewhere in it, Xcode doesn\'92t know where to point out.\
+\'a0\
+On line 75, I would avoid stacking braces like this \'93\{\{\{\{\{\'93, as it\'92s difficult to understand what scope you\'92re trying to close.\
+\'a0\
+On line 87, you could remove isLoading.toggle() by defining isLoading\'92s initial value as true on line 44. It\'92s also important to add some logic to check when the isLoading.toggle should be defined as false and dismiss the ProgressView, as I couldn\'92t find any line that kept track of that.\
+\'a0\
+On line 97, coverarturl will always be nil because no value is being passed on line 63. It\'92s name is also lacking camelCase, unlike the rest of the code.\
+\'a0\
+On line 126, you could use nil coalescing instead of force unwrapping to display a sample image in case a data does not get rendered properly. It would also be a good idea to create a computed property to safely unwrap the optional values into an Image.\
+\'a0\
+On line 102 and 125, it wouldn\'92t be necessary to use a VStack, as there\'92s only one view.\'a0 You can also entirely remove from line 122 to 131 and replace the line 102 to 104 with: Group \{ if let coverArtData \{ Image(uiImage: UIImage(data: coverArtData)!) \} \}}
