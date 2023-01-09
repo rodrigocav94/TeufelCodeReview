@@ -19,3 +19,5 @@ On line 97, coverarturl will always be nil because no value is being passed on l
 On line 126, you could use nil coalescing instead of force unwrapping to display a sample image in case a data does not get rendered properly. It would also be a good idea to create a computed property to safely unwrap the optional values into an Image.
  
 On line 102 and 125, it wouldn’t be necessary to use a VStack, as there’s only one view.  You can also entirely remove from line 122 to 131 and replace the line 102 to 104 with: Group { if let coverArtData { Image(uiImage: UIImage(data: coverArtData)!) } }
+
+It's also necessary to use weak self in all functions that are run in the background to avoid a retaining cycle and make any changes that will affect the user interface on the main thread using.
